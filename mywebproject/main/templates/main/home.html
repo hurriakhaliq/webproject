@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ owner_details.name }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        .hero-section {
+            background: url('{{ owner_details.hero_image_url }}') no-repeat center center/cover;
+            color: white;
+            padding: 100px 0;
+        }
+
+        .about-section,
+        .education-section,
+        .experience-section,
+        .skills-section {
+            text-align: center;
+        }
+
+        .about-section img,
+        .education-section img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .projects-section {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            border: none;
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .contact-section {
+            text-align: center;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .contact-section form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">{{ owner_details.name }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#education">Education</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#experience">Experience</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#skills">Skills</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#projects">Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4" style="color: black;">{{ owner_details.name }}</h1>
+            <p class="lead" style="color: grey;">{{ owner_details.intro }}</p>
+            <a href="#projects" class="btn btn-primary btn-lg">View My Work</a>
+        </div>
+    </section>
+
+    <section id="about" class="about-section bg-light py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="{{ owner_details.image_url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3">
+                </div>
+                <div class="col-md-6">
+                    <h2>About Me</h2>
+                    <p>{{ owner_details.about }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education" class="education-section py-5">
+        <div class="container">
+            <h1 class="text-center">Education</h1>
+            <div class="row">
+                {% for edu in education %}
+                <div class="col-md-4">
+                    <h3>{{ edu.degree }}</h3>
+                    <p>{{ edu.institution }}, {{ edu.year_start }} - {{ edu.year_end }}</p>
+                </div>
+                {% empty %}
+                <p>No education data available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="experience-section bg-light py-5">
+        <div class="container">
+            <h1 class="text-center">Experience</h1>
+            <div class="row">
+                {% for exp in experience %}
+                <div class="col-md-6">
+                    <h3>{{ exp.title }}</h3>
+                    <p>{{ exp.company }}, {{ exp.year_start }} - {{ exp.year_end }}</p>
+                    <p>Responsibilities: {{ exp.responsibilities }}</p>
+                </div>
+                {% empty %}
+                <p>No experience data available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills-section py-5">
+        <div class="container">
+            <h1 class="text-center">Skills</h1>
+            <div class="row">
+                {% for skill in skills %}
+                <div class="col-md-4">
+                    <h6>{{ skill.name }}</h6>
+                </div>
+                {% empty %}
+                <p>No skills data available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects-section py-5">
+        <div class="container">
+            <h1 class="text-center">Projects</h1>
+            <div class="row">
+                {% for project in projects %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <p class="card-text">{{ project.description }}</p>
+                            <a href="{{ project.project_url }}" class="btn btn-primary" target="_blank">View Project</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No projects data available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section bg-light py-5">
+        <div class="container">
+            <h2 class="text-center">Contact Me</h2>
+            <form action="{% url 'contact_form_submit' %}" method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputName">Name</label>
+                        <input type="text" class="form-control" id="inputName" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Your Email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputMessage">Message</label>
+                    <textarea class="form-control" id="inputMessage" name="message" rows="4" placeholder="Your Message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
